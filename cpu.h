@@ -26,7 +26,8 @@ typedef struct chip8
   uint8_t sound_timer;                             // sound timer
 } chip8_t;
 
-// function prototypes
+/* --------------------------- function prototypes -------------------------- */
+
 /**
  * @brief loads fontset into memory, starting from 0x50
  *
