@@ -134,88 +134,113 @@ void chip8_cycle(chip8_t *chip8)
     switch (opcode & 0x00FF)
     {
     case 0x00E0:
+      LOG_INFO("00E0 - CLS");
       op_00E0(chip8);
       break;
     case 0x00EE:
+      LOG_INFO("00EE - RET");
       op_00EE(chip8);
       break;
     }
     break;
   case 0x1000:
+    LOG_INFO("1nnn - JP 0x%03X", opcode & 0x0FFF);
     op_1nnn(chip8, opcode);
     break;
   case 0x2000:
+    LOG_INFO("2nnn - CALL 0x%03X", opcode & 0x0FFF);
     op_2nnn(chip8, opcode);
     break;
   case 0x3000:
+    LOG_INFO("3xkk - SE V%X, 0x%02X", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
     op_3xkk(chip8, opcode);
     break;
   case 0x4000:
+    LOG_INFO("4xkk - SNE V%X, 0x%02X", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
     op_4xkk(chip8, opcode);
     break;
   case 0x5000:
+    LOG_INFO("5xy0 - SE V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
     op_5xy0(chip8, opcode);
     break;
   case 0x6000:
+    LOG_INFO("6xkk - LD V%X, 0x%02X", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
     op_6xkk(chip8, opcode);
     break;
   case 0x7000:
+    LOG_INFO("7xkk - ADD V%X, 0x%02X", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
     op_7xkk(chip8, opcode);
     break;
   case 0x8000:
     switch (opcode & 0x000F)
     {
     case 0x0000:
+      LOG_INFO("8xy0 - LD V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
       op_8xy0(chip8, opcode);
       break;
     case 0x0001:
+      LOG_INFO("8xy1 - OR V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
       op_8xy1(chip8, opcode);
       break;
     case 0x0002:
+      LOG_INFO("8xy2 - AND V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
       op_8xy2(chip8, opcode);
       break;
     case 0x0003:
+      LOG_INFO("8xy3 - XOR V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
       op_8xy3(chip8, opcode);
       break;
     case 0x0004:
+      LOG_INFO("8xy4 - ADD V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
       op_8xy4(chip8, opcode);
       break;
     case 0x0005:
+      LOG_INFO("8xy5 - SUB V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
       op_8xy5(chip8, opcode);
       break;
     case 0x0006:
+      LOG_INFO("8xy6 - SHR V%X", (opcode & 0x0F00) >> 8);
       op_8xy6(chip8, opcode);
       break;
     case 0x0007:
+      LOG_INFO("8xy7 - SUBN V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
       op_8xy7(chip8, opcode);
       break;
     case 0x000E:
+      LOG_INFO("8xyE - SHL V%X", (opcode & 0x0F00) >> 8);
       op_8xyE(chip8, opcode);
       break;
     }
     break;
   case 0x9000:
+    LOG_INFO("9xy0 - SNE V%X, V%X", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
     op_9xy0(chip8, opcode);
     break;
   case 0xA000:
+    LOG_INFO("Annn - LD I, 0x%03X", opcode & 0x0FFF);
     op_Annn(chip8, opcode);
     break;
   case 0xB000:
+    LOG_INFO("Bnnn - JP V0, 0x%03X", opcode & 0x0FFF);
     op_Bnnn(chip8, opcode);
     break;
   case 0xC000:
+    LOG_INFO("Cxkk - RND V%X, 0x%02X", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
     op_Cxkk(chip8, opcode);
     break;
   case 0xD000:
+    LOG_INFO("Dxyn - DRW V%X, V%X, %d", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4, opcode & 0x000F);
     op_Dxyn(chip8, opcode);
     break;
   case 0xE000:
     switch (opcode & 0x00FF)
     {
     case 0x009E:
+      LOG_INFO("Ex9E - SKP V%X", (opcode & 0x0F00) >> 8);
       op_Ex9E(chip8, opcode);
       break;
     case 0x00A1:
+      LOG_INFO("ExA1 - SKNP V%X", (opcode & 0x0F00) >> 8);
       op_ExA1(chip8, opcode);
       break;
     }
@@ -224,36 +249,46 @@ void chip8_cycle(chip8_t *chip8)
     switch (opcode & 0x00FF)
     {
     case 0x0007:
+      LOG_INFO("Fx07 - LD V%X, DT", (opcode & 0x0F00) >> 8);
       op_Fx07(chip8, opcode);
       break;
     case 0x000A:
+      LOG_INFO("Fx0A - LD V%X, K", (opcode & 0x0F00) >> 8);
       op_Fx0A(chip8, opcode);
       break;
     case 0x0015:
+      LOG_INFO("Fx15 - LD DT, V%X", (opcode & 0x0F00) >> 8);
       op_Fx15(chip8, opcode);
       break;
     case 0x0018:
+      LOG_INFO("Fx18 - LD ST, V%X", (opcode & 0x0F00) >> 8);
       op_Fx18(chip8, opcode);
       break;
     case 0x001E:
+      LOG_INFO("Fx1E - ADD I, V%X", (opcode & 0x0F00) >> 8);
       op_Fx1E(chip8, opcode);
       break;
     case 0x0029:
+      LOG_INFO("Fx29 - LD F, V%X", (opcode & 0x0F00) >> 8);
       op_Fx29(chip8, opcode);
       break;
     case 0x0033:
+      LOG_INFO("Fx33 - LD B, V%X", (opcode & 0x0F00) >> 8);
       op_Fx33(chip8, opcode);
       break;
     case 0x0055:
+      LOG_INFO("Fx55 - LD [I], V%X", (opcode & 0x0F00) >> 8);
       op_Fx55(chip8, opcode);
       break;
     case 0x0065:
+      LOG_INFO("Fx65 - LD V%X, [I]", (opcode & 0x0F00) >> 8);
       op_Fx65(chip8, opcode);
       break;
     }
     break;
   default:
     // invalid opcode
+    LOG_ERROR("Invalid opcode: 0x%X", opcode);
     break;
   }
 }
@@ -730,7 +765,8 @@ static void op_ExA1(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx07(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx07
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  chip8->registers[x] = chip8->delay_timer;
 }
 
 /**
@@ -743,7 +779,20 @@ static void op_Fx07(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx0A(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx0A
+  uint8_t x = (opcode & 0x0F00) >> 8;
+
+  for (int key = 0; key < KEY_COUNT; ++key)
+  {
+    if (chip8->keypad[key] != 0)
+    {
+      // key was pressed
+      chip8->registers[x] = key;
+      return;
+    }
+  }
+  // exit loop when no key press detected
+
+  chip8->pc -= 2; // decrement PC so this instruction runs infinitely until a key is pressed
 }
 
 /**
@@ -756,7 +805,8 @@ static void op_Fx0A(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx15(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx15
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  chip8->delay_timer = chip8->registers[x];
 }
 
 /**
@@ -769,7 +819,8 @@ static void op_Fx15(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx18(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx18
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  chip8->sound_timer = chip8->registers[x];
 }
 
 /**
@@ -782,7 +833,8 @@ static void op_Fx18(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx1E(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx1E
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  chip8->index += chip8->registers[x];
 }
 
 /**
@@ -795,7 +847,12 @@ static void op_Fx1E(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx29(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx29
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t digit = chip8->registers[x];
+
+  // fontset start at 0x50 and each character is 5 bytes
+  // location = 0x50 + (digit * 5)
+  chip8->index = FONTSET_START_ADDRESS + (digit * 5);
 }
 
 /**
@@ -808,7 +865,17 @@ static void op_Fx29(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx33(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx33
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t value = chip8->registers[x];
+
+  // hundreds digit
+  chip8->memory[chip8->index] = value / 100;
+
+  // tens digit
+  chip8->memory[chip8->index + 1] = (value / 10) % 10;
+
+  // ones digit
+  chip8->memory[chip8->index + 2] = value % 10;
 }
 
 /**
@@ -821,7 +888,12 @@ static void op_Fx33(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx55(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx55
+  uint8_t x = (opcode & 0x0F00) >> 8;
+
+  for (int i = 0; i <= x; ++i)
+  {
+    chip8->memory[chip8->index + i] = chip8->registers[i];
+  }
 }
 
 /**
@@ -834,5 +906,10 @@ static void op_Fx55(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Fx65(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Fx65
+  uint8_t x = (opcode & 0x0F00) >> 8;
+
+  for (int i = 0; i <= x; ++i)
+  {
+    chip8->registers[i] = chip8->memory[chip8->index + i];
+  }
 }

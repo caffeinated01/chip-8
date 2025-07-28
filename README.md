@@ -17,6 +17,6 @@ Fantastic references:
 ## TODO
 
 - [x] Scaffolding
-- [ ] Opcode implementation
+- [x] Opcode implementation
 - [ ] Emulator main loop
 - [ ] Rendering with a graphics library
