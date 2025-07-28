@@ -73,8 +73,8 @@ int chip8_load_rom(chip8_t *chip8, const char *rom_path)
 
   if (rom_file == NULL)
   {
-    LOG_ERROR("Could not open ROM file %s", rom_path);
-    return -1;
+    LOG_ERROR("Could not open %s", rom_path);
+    return 1;
   }
 
   fseek(rom_file, 0, SEEK_END);
@@ -83,9 +83,9 @@ int chip8_load_rom(chip8_t *chip8, const char *rom_path)
 
   if (rom_size > MEMORY_SIZE - START_ADDRESS)
   {
-    LOG_ERROR("ROM file %s is too large to fit in memory", rom_path);
+    LOG_ERROR("%s is too large to fit in memory", rom_path);
     fclose(rom_file);
-    return -1;
+    return 1;
   }
 
   size_t bytes_read = fread(&chip8->memory[START_ADDRESS], 1, rom_size, rom_file);
@@ -93,13 +93,13 @@ int chip8_load_rom(chip8_t *chip8, const char *rom_path)
   if (bytes_read != rom_size)
   {
     // number of bytes read doesnt match the file size, ROM not loaded properly
-    LOG_ERROR("Reading from ROM file at %s unsuccessful", rom_path);
+    LOG_ERROR("Failed to read from %s", rom_path);
     fclose(rom_file);
-    return -1;
+    return 1;
   }
   else
   {
-    LOG_OK("Reading from ROM file at %s successful", rom_path);
+    LOG_OK("Read from %s successfully", rom_path);
   }
 
   fclose(rom_file);
