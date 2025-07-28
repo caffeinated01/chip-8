@@ -324,10 +324,10 @@ static void op_2nnn(chip8_t *chip8, uint16_t opcode)
  */
 static void op_3xkk(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
+  uint8_t x = (opcode & 0x0F00) >> 8;
   uint8_t kk = opcode & 0x00FF;
 
-  if (chip8->registers[Vx] == kk)
+  if (chip8->registers[x] == kk)
   {
     chip8->pc += 2;
   }
@@ -343,10 +343,10 @@ static void op_3xkk(chip8_t *chip8, uint16_t opcode)
  */
 static void op_4xkk(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
+  uint8_t x = (opcode & 0x0F00) >> 8;
   uint8_t kk = opcode & 0x00FF;
 
-  if (chip8->registers[Vx] != kk)
+  if (chip8->registers[x] != kk)
   {
     chip8->pc += 2;
   }
@@ -362,10 +362,10 @@ static void op_4xkk(chip8_t *chip8, uint16_t opcode)
  */
 static void op_5xy0(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  if (chip8->registers[Vx] == chip8->registers[Vy])
+  if (chip8->registers[x] == chip8->registers[y])
   {
     chip8->pc += 2;
   }
@@ -381,10 +381,10 @@ static void op_5xy0(chip8_t *chip8, uint16_t opcode)
  */
 static void op_6xkk(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
+  uint8_t x = (opcode & 0x0F00) >> 8;
   uint8_t kk = opcode & 0x00FF;
 
-  chip8->registers[Vx] = kk;
+  chip8->registers[x] = kk;
 }
 
 /**
@@ -397,10 +397,10 @@ static void op_6xkk(chip8_t *chip8, uint16_t opcode)
  */
 static void op_7xkk(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
+  uint8_t x = (opcode & 0x0F00) >> 8;
   uint8_t kk = opcode & 0x00FF;
 
-  chip8->registers[Vx] += kk;
+  chip8->registers[x] += kk;
 }
 
 /**
@@ -413,10 +413,10 @@ static void op_7xkk(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy0(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  chip8->registers[Vx] = chip8->registers[Vy];
+  chip8->registers[x] = chip8->registers[y];
 }
 
 /**
@@ -429,10 +429,10 @@ static void op_8xy0(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy1(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  chip8->registers[Vx] |= chip8->registers[Vy];
+  chip8->registers[x] |= chip8->registers[y];
 }
 
 /**
@@ -445,10 +445,10 @@ static void op_8xy1(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy2(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  chip8->registers[Vx] &= chip8->registers[Vy];
+  chip8->registers[x] &= chip8->registers[y];
 }
 
 /**
@@ -461,10 +461,10 @@ static void op_8xy2(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy3(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  chip8->registers[Vx] ^= chip8->registers[Vy];
+  chip8->registers[x] ^= chip8->registers[y];
 }
 
 /**
@@ -477,10 +477,10 @@ static void op_8xy3(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy4(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  uint16_t sum = chip8->registers[Vx] + chip8->registers[Vy];
+  uint16_t sum = chip8->registers[x] + chip8->registers[y];
 
   if (sum > 255)
   {
@@ -491,7 +491,7 @@ static void op_8xy4(chip8_t *chip8, uint16_t opcode)
     chip8->registers[0xF] = 0;
   }
 
-  chip8->registers[Vx] = sum & 0xFF; // only the lowest 8 bits of the result are kept, and stored in Vx
+  chip8->registers[x] = sum & 0xFF; // only the lowest 8 bits of the result are kept, and stored in Vx
 }
 
 /**
@@ -504,10 +504,10 @@ static void op_8xy4(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy5(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  if (chip8->registers[Vx] > chip8->registers[Vy])
+  if (chip8->registers[x] > chip8->registers[y])
   {
     chip8->registers[0xF] = 1;
   }
@@ -516,7 +516,7 @@ static void op_8xy5(chip8_t *chip8, uint16_t opcode)
     chip8->registers[0xF] = 0;
   }
 
-  chip8->registers[Vx] -= chip8->registers[Vy];
+  chip8->registers[x] -= chip8->registers[y];
 }
 
 /**
@@ -529,11 +529,11 @@ static void op_8xy5(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy6(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
+  uint8_t x = (opcode & 0x0F00) >> 8;
 
-  chip8->registers[0xF] = chip8->registers[Vx] & 0x01; // store LSB in VF
+  chip8->registers[0xF] = chip8->registers[x] & 0x01; // store LSB in VF
 
-  chip8->registers[Vx] >>= 1; // shift right by 1 is same as dividing by 2 on unsigned ints
+  chip8->registers[x] >>= 1; // shift right by 1 is same as dividing by 2 on unsigned ints
 }
 
 /**
@@ -546,10 +546,10 @@ static void op_8xy6(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xy7(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  if (chip8->registers[Vy] > chip8->registers[Vx])
+  if (chip8->registers[y] > chip8->registers[x])
   {
     chip8->registers[0xF] = 1;
   }
@@ -558,7 +558,7 @@ static void op_8xy7(chip8_t *chip8, uint16_t opcode)
     chip8->registers[0xF] = 0;
   }
 
-  chip8->registers[Vx] = chip8->registers[Vy] - chip8->registers[Vx];
+  chip8->registers[x] = chip8->registers[y] - chip8->registers[x];
 }
 
 /**
@@ -571,11 +571,11 @@ static void op_8xy7(chip8_t *chip8, uint16_t opcode)
  */
 static void op_8xyE(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
+  uint8_t x = (opcode & 0x0F00) >> 8;
 
-  chip8->registers[0xF] = (chip8->registers[Vx] & 0x80) >> 7; // store MSB in VF
+  chip8->registers[0xF] = (chip8->registers[x] & 0x80) >> 7; // store MSB in VF
 
-  chip8->registers[Vx] <<= 1; // shift left by 1 is same as multiplying by 2 on unsigned ints
+  chip8->registers[x] <<= 1; // shift left by 1 is same as multiplying by 2 on unsigned ints
 }
 
 /**
@@ -588,10 +588,10 @@ static void op_8xyE(chip8_t *chip8, uint16_t opcode)
  */
 static void op_9xy0(chip8_t *chip8, uint16_t opcode)
 {
-  uint8_t Vx = (opcode & 0x0F00) >> 8;
-  uint8_t Vy = (opcode & 0x00F0) >> 4;
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
 
-  if (chip8->registers[Vx] != chip8->registers[Vy])
+  if (chip8->registers[x] != chip8->registers[y])
   {
     chip8->pc += 2;
   }
@@ -607,7 +607,8 @@ static void op_9xy0(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Annn(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Annn
+  uint16_t nnn = opcode & 0x0FFF;
+  chip8->index = nnn;
 }
 
 /**
@@ -620,7 +621,8 @@ static void op_Annn(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Bnnn(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Bnnn
+  uint16_t nnn = opcode & 0x0FFF;
+  chip8->pc = nnn + chip8->registers[0];
 }
 
 /**
@@ -633,7 +635,11 @@ static void op_Bnnn(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Cxkk(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Cxkk
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t kk = opcode & 0x00FF;
+
+  // generate a random byte and AND it with kk
+  chip8->registers[x] = (rand() % 256) & kk;
 }
 
 /**
@@ -646,7 +652,36 @@ static void op_Cxkk(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Dxyn(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Dxyn
+  uint8_t x = (opcode & 0x0F00) >> 8;
+  uint8_t y = (opcode & 0x00F0) >> 4;
+  uint8_t n = opcode & 0x000F; // height of sprite in pixels; sprites are ALWAYS 8 pixels wide
+
+  uint8_t pos_x = chip8->registers[x] % DISPLAY_WIDTH;
+  uint8_t pos_y = chip8->registers[y] % DISPLAY_HEIGHT;
+
+  chip8->registers[0xF] = 0; // reset collision to false
+
+  for (int row = 0; row < n; ++row)
+  {
+    uint8_t sprite_byte = chip8->memory[chip8->index + row];
+
+    for (int col = 0; col < 8; ++col)
+    {
+      uint8_t sprite_pixel = sprite_byte & (0x80 >> col);
+      uint16_t screen_index = ((pos_y + row) * DISPLAY_WIDTH) + (pos_x + col);
+      uint16_t screen_pixel = chip8->display[screen_index];
+
+      if (sprite_pixel != 0)
+      {
+        if (screen_pixel)
+        { // set collision to true
+          chip8->registers[0xF] = 1;
+        }
+
+        chip8->display[screen_index] ^= 1; // flip screen pixel with XOR
+      }
+    }
+  }
 }
 
 /**
@@ -659,7 +694,12 @@ static void op_Dxyn(chip8_t *chip8, uint16_t opcode)
  */
 static void op_Ex9E(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode Ex9E
+  uint8_t x = (opcode & 0x0F00) >> 8;
+
+  if (chip8->keypad[chip8->registers[x]])
+  { // key is activated
+    chip8->pc += 2;
+  }
 }
 
 /**
@@ -672,7 +712,12 @@ static void op_Ex9E(chip8_t *chip8, uint16_t opcode)
  */
 static void op_ExA1(chip8_t *chip8, uint16_t opcode)
 {
-  // todo: implement opcode ExA1
+  uint8_t x = (opcode & 0x0F00) >> 8;
+
+  if (!chip8->keypad[chip8->registers[x]])
+  { // key is not activated
+    chip8->pc += 2;
+  }
 }
 
 /**
