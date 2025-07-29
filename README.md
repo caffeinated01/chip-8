@@ -10,13 +10,52 @@ Fantastic references:
 
 (to be added)
 
-## How to Build and Run
+## Building
 
-(to be added)
+0. Make sure you have the following installed on your system
+
+- A C compiler (like [GCC](https://gcc.gnu.org/) or [Clang](https://clang.llvm.org/) etc.)
+- [CMake](https://cmake.org/)
+
+1. Clone the repository
+
+```sh
+git clone https://github.com/caffeinated01/chip-8.git
+cd chip-8
+```
+
+2. Create a build directory and run CMake
+
+```sh
+mkdir build
+cd build
+cmake ..
+```
+
+3. Compile (and hope it works)
+
+```sh
+make
+```
+
+This will create a `chip8` executable in the project's root directory
+
+## Running
+
+`Usage: chip8 [-v] [-s <scale>] -r <rom_path>` \
+`-v` is for verbose logging. ommit this to disable verbose logging \
+`-s` is for scale. Scale is multiplied to original display height and width, 64 and 32. A scale of 10 would result in a window that is 640px by 320px large \
+`-r` is for path to rom. \
+Example usage:
+
+```sh
+./chip8 -r roms/ibm-logo.ch8 -s 10 -v
+```
 
 ## TODO
 
 - [x] Scaffolding
 - [x] Opcode implementation
-- [ ] Emulator main loop
+- [x] Emulator main loop
+- [ ] Deal with timers
 - [ ] Rendering with a graphics library

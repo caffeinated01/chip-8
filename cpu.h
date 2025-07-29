@@ -29,18 +29,11 @@ typedef struct chip8
 /* --------------------------- function prototypes -------------------------- */
 
 /**
- * @brief loads fontset into memory, starting from 0x50
- *
- * @param chip8 pointer to chip8 struct
- */
-void chip8_load_fontset(chip8_t *chip8);
-
-/**
  * @brief loads a ROM into memory
  *
  * @param chip8 pointer to chip8 struct
  * @param rom_path path to the ROM file
- * @return `0` on success, `-1` on failure
+ * @return `0` on success, `1` on failure
  */
 int chip8_load_rom(chip8_t *chip8, const char *rom_path);
 

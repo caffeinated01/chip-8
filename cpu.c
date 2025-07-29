@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+static void chip8_load_fontset(chip8_t *chip8);
+
 static void op_00E0(chip8_t *chip8);
 static void op_00EE(chip8_t *chip8);
 static void op_1nnn(chip8_t *chip8, uint16_t opcode);
@@ -40,7 +42,7 @@ static void op_Fx33(chip8_t *chip8, uint16_t opcode);
 static void op_Fx55(chip8_t *chip8, uint16_t opcode);
 static void op_Fx65(chip8_t *chip8, uint16_t opcode);
 
-uint8_t fontset[FONTSET_SIZE] = {
+static uint8_t fontset[FONTSET_SIZE] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -59,7 +61,12 @@ uint8_t fontset[FONTSET_SIZE] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-void chip8_load_fontset(chip8_t *chip8)
+/**
+ * @brief loads fontset into memory, starting from 0x50
+ *
+ * @param chip8 pointer to chip8 struct
+ */
+static void chip8_load_fontset(chip8_t *chip8)
 {
   // load font into memory
   memcpy(&chip8->memory[FONTSET_START_ADDRESS], fontset, FONTSET_SIZE);
