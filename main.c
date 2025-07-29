@@ -395,9 +395,10 @@ int main(int argc, char **argv)
     {
       last_cycle_time = current_time;
       chip8_cycle(&chip8);
+      draw_display(&chip8, &emulator);
     }
 
-    if (current_time - last_timer_time > 16)
+    if (current_time - last_timer_time > (1000 / 60))
     {
       last_timer_time = current_time;
       if (chip8.delay_timer > 0)
@@ -410,8 +411,6 @@ int main(int argc, char **argv)
         chip8.sound_timer--;
       }
     }
-
-    draw_display(&chip8, &emulator);
   }
 
   // cleanup
