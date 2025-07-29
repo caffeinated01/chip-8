@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+/* --------------------------- forward declaration -------------------------- */
 static void chip8_load_fontset(chip8_t *chip8);
 
 static void op_00E0(chip8_t *chip8);
@@ -61,6 +62,7 @@ static uint8_t fontset[FONTSET_SIZE] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
+/* ---------------------------- initialisation/cycle functions ---------------------------- */
 /**
  * @brief loads fontset into memory, starting from 0x50
  *

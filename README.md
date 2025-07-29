@@ -44,7 +44,8 @@ This will create a `chip8` executable in the project's root directory
 
 `Usage: chip8 [-v] [-s <scale>] -r <rom_path>` \
 `-v` is for verbose logging. ommit this to disable verbose logging \
-`-s` is for scale. Scale is multiplied to original display height and width, 64 and 32. A scale of 10 would result in a window that is 640px by 320px large \
+`-s` is for scale. Scale is multiplied to original display height and width, 64 and 32. A scale of 10 would result in a window that is 640px by 320px large. Defaulted as 10 \
+`-d` is for cycle delay. Defaulted as 1 \
 `-r` is for path to rom. \
 Example usage:
 
@@ -57,5 +58,7 @@ Example usage:
 - [x] Scaffolding
 - [x] Opcode implementation
 - [x] Emulator main loop
-- [ ] Deal with timers
-- [ ] Rendering with a graphics library
+- [x] Deal with timers
+- [x] Rendering with a graphics library
+- [ ] Play BEEP sound
+- [x] Test against [BonCoder/BestCoder test](https://github.com/cj1128/chip8-emulator/tree/master/rom) and [corax89's CHIP-8 test ROM](https://github.com/corax89/chip8-test-rom)
