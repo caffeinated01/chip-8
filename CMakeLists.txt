@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(chip8)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -23,4 +23,4 @@ add_executable(
   config.c
 )
 
-target_link_libraries(chip8 PRIVATE SDL2::SDL2)
+target_link_libraries(chip8 PRIVATE SDL2::SDL2main SDL2::SDL2)
