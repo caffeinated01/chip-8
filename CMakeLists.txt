@@ -18,9 +18,10 @@ FetchContent_MakeAvailable(SDL)
 
 add_executable(
   chip8
-  main.c
-  cpu.c
-  config.c
+  src/main.c
+  src/cpu.c
+  src/config.c
 )
 
+target_include_directories(chip8 PRIVATE src)
 target_link_libraries(chip8 PRIVATE SDL2::SDL2main SDL2::SDL2)

@@ -38,7 +38,7 @@ cmake ..
 make
 ```
 
-This will create a `chip8` executable in the project's root directory
+This will create a `chip8` executable in the `build/bin/`
 
 ## Running
 
@@ -50,7 +50,7 @@ This will create a `chip8` executable in the project's root directory
 Example usage:
 
 ```sh
-./chip8 -r roms/ibm-logo.ch8 -s 10 -v
+./chip8 -r ../../roms/ibm-logo.ch8 -s 10 -v
 ```
 
 ## TODO
@@ -61,4 +61,5 @@ Example usage:
 - [x] Deal with timers
 - [x] Rendering with a graphics library
 - [ ] Play BEEP sound
+- [ ] Add configuration for render colors
 - [x] Test against [BonCoder/BestCoder test](https://github.com/cj1128/chip8-emulator/tree/master/rom) and [corax89's CHIP-8 test ROM](https://github.com/corax89/chip8-test-rom)
