@@ -60,6 +60,6 @@ Example usage:
 - [x] Emulator main loop
 - [x] Deal with timers
 - [x] Rendering with a graphics library
+- [x] Add configuration for render colors
 - [ ] Play BEEP sound
-- [ ] Add configuration for render colors
 - [x] Test against [BonCoder/BestCoder test](https://github.com/cj1128/chip8-emulator/tree/master/rom) and [corax89's CHIP-8 test ROM](https://github.com/corax89/chip8-test-rom)
