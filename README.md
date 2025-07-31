@@ -57,7 +57,7 @@ This will create a `chip8` executable in `build/bin/`
 Example usage:
 
 ```sh
-./chip8 -r roms/ibm-logo.ch8 -s 15 -d 3 -c #0e0f0e #d6dce9
+./chip8 -r roms/ibm_logo.ch8 -s 15 -d 3 -c #0e0f0e #d6dce9
 ```
 
 ## Contributions
