@@ -43,7 +43,7 @@ This will create a `chip8` executable in `build/bin/`
 ## Running
 
 `Usage: chip8 [-v] [-s <scale>] -r <rom_path>` \
-`-v` is for verbose logging. ommit this to disable verbose logging \
+`-v` is for verbose logging. Ommit this to disable verbose logging. NOTE: only enable this if you are debugging or want to see what's going on behind the scenes, the sheer amount of IO slows down the emulator significantly \
 `-s` is for scale. Scale is multiplied to original display height and width, 64 and 32. A scale of 10 would result in a window that is 640px by 320px large. Defaulted as 10 \
 `-d` is for cycle delay. Defaulted as 1 \
 `-r` is for path to rom. \
