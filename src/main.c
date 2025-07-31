@@ -12,11 +12,15 @@ typedef struct Emulator
 {
   SDL_Window *window;
   SDL_Renderer *renderer;
+  color_t bg_color;
+  color_t fg_color;
 } emulator_t;
 
 /* --------------------------- forward declaration -------------------------- */
 
 static void print_usage(FILE *out, const char *program);
+
+static color_t hex_to_rgba(const char *hex);
 
 static int initialise_sdl(emulator_t *emulator);
 static void cleanup_sdl(emulator_t *emulator, int exit_status);
@@ -36,7 +40,45 @@ static void draw_display(chip8_t *chip8, emulator_t *emulator);
  */
 static void print_usage(FILE *out, const char *program)
 {
-  fprintf(out, "Usage: %s [-v] [-s <scale>] [-d <delay>] -r <rom_path>\n", program);
+  fprintf(out, "Usage: %s [-v] [-s <scale>] [-d <delay>] [-c <bg_color> <fg_color>] -r <rom_path>\n", program);
+}
+
+/**
+ * @brief converts hex color code to rgba
+ *
+ * @param hex string representing color code
+ * @return color_t struct with r g b a properties
+ */
+static color_t hex_to_rgba(const char *hex)
+{
+  if (hex[0] == '#')
+  {
+    hex++;
+  }
+
+  char hex_component[3];
+  hex_component[2] = '\0';
+
+  // rr
+  strncpy(hex_component, hex, 2);
+  long r = strtol(hex_component, NULL, 16);
+
+  // gg
+  strncpy(hex_component, hex + 2, 2);
+  long g = strtol(hex_component, NULL, 16);
+
+  // bb
+  strncpy(hex_component, hex + 4, 2);
+  long b = strtol(hex_component, NULL, 16);
+
+  color_t color = {
+      .r = (uint8_t)r,
+      .g = (uint8_t)g,
+      .b = (uint8_t)b,
+      .a = 255,
+  };
+
+  return color;
 }
 
 /**
@@ -147,6 +189,22 @@ static void parse_arguments(int argc, char **argv, char **rom_path)
       else
       {
         fprintf(stderr, "Cycle delay not provided\n");
+        print_usage(stderr, program);
+        exit(EXIT_FAILURE);
+      }
+      continue;
+    }
+
+    if (strcmp(argv[i], "-c") == 0)
+    {
+      if (i + 2 < argc)
+      {
+        g_config.bg_color = hex_to_rgba(argv[++i]);
+        g_config.fg_color = hex_to_rgba(argv[++i]);
+      }
+      else
+      {
+        fprintf(stderr, "Render colors not provided\n");
         print_usage(stderr, program);
         exit(EXIT_FAILURE);
       }
@@ -304,10 +362,12 @@ static void handle_input(chip8_t *chip8, bool *running)
  */
 static void draw_display(chip8_t *chip8, emulator_t *emulator)
 {
-  SDL_SetRenderDrawColor(emulator->renderer, 0, 0, 0, 255);
-  SDL_RenderClear(emulator->renderer); // black bg
+  // bg color
+  SDL_SetRenderDrawColor(emulator->renderer, emulator->bg_color.r, emulator->bg_color.g, emulator->bg_color.b, emulator->bg_color.a);
+  SDL_RenderClear(emulator->renderer);
 
-  SDL_SetRenderDrawColor(emulator->renderer, 255, 255, 255, 255); // white pixels
+  // fg color
+  SDL_SetRenderDrawColor(emulator->renderer, emulator->fg_color.r, emulator->fg_color.g, emulator->fg_color.b, emulator->fg_color.a);
 
   for (int row = 0; row < DISPLAY_HEIGHT; ++row)
   {
@@ -359,6 +419,8 @@ int main(int argc, char **argv)
   emulator_t emulator = {
       .window = NULL,
       .renderer = NULL,
+      .bg_color = g_config.bg_color,
+      .fg_color = g_config.fg_color,
   };
 
   if (initialise_sdl(&emulator) != 0)
@@ -386,8 +448,6 @@ int main(int argc, char **argv)
 
   while (running)
   {
-    SDL_Event event;
-
     handle_input(&chip8, &running);
 
     uint32_t current_time = SDL_GetTicks();
