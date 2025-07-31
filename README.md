@@ -38,7 +38,7 @@ cmake ..
 make
 ```
 
-This will create a `chip8` executable in the `build/bin/`
+This will create a `chip8` executable in `build/bin/`
 
 ## Running
 
@@ -61,5 +61,5 @@ Example usage:
 - [x] Deal with timers
 - [x] Rendering with a graphics library
 - [x] Add configuration for render colors
-- [ ] Play BEEP sound
+- [x] Play BEEP sound
 - [x] Test against [BonCoder/BestCoder test](https://github.com/cj1128/chip8-emulator/tree/master/rom) and [corax89's CHIP-8 test ROM](https://github.com/corax89/chip8-test-rom)

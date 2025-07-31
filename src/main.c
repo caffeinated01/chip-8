@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "cpu.h"
 #include "logger.h"
 #include "config.h"
@@ -8,10 +9,15 @@
 
 #define WINDOW_TITLE "CHIP-8"
 
+#define SAMPLE_RATE 48000 // number of samples computer takes per second to represent the wave
+#define AMPLITUDE 2000
+#define FREQUENCY 440 // "440Hz is a middle C and pleasant as well" ~ https://forum.allaboutcircuits.com/threads/frequency-for-a-nice-beep-sound.116284/
+
 typedef struct Emulator
 {
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SDL_AudioDeviceID audio_device;
   color_t bg_color;
   color_t fg_color;
 } emulator_t;
@@ -29,6 +35,7 @@ static void parse_arguments(int argc, char **argv, char **rom_path);
 
 static void handle_input(chip8_t *chip8, bool *running);
 static void draw_display(chip8_t *chip8, emulator_t *emulator);
+static void audio_callback(void *userdata, uint8_t *stream, int len);
 
 /* ---------------------------- helper functions ---------------------------- */
 
@@ -114,6 +121,21 @@ static int initialise_sdl(emulator_t *emulator)
     return 1;
   }
 
+  SDL_AudioSpec want, have;
+  SDL_zero(want);
+  want.freq = SAMPLE_RATE;
+  want.format = AUDIO_S16SYS;
+  want.channels = 1;
+  want.samples = 4096;
+  want.callback = audio_callback;
+
+  emulator->audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
+  if (!emulator->audio_device)
+  {
+    LOG_ERROR("SDL_OpenAudioDevice failed: %s", SDL_GetError());
+    return 1;
+  }
+
   return 0;
 }
 
@@ -125,6 +147,7 @@ static int initialise_sdl(emulator_t *emulator)
  */
 static void cleanup_sdl(emulator_t *emulator, int exit_status)
 {
+  SDL_CloseAudioDevice(emulator->audio_device);
   SDL_DestroyRenderer(emulator->renderer);
   SDL_DestroyWindow(emulator->window);
   SDL_Quit();
@@ -389,6 +412,39 @@ static void draw_display(chip8_t *chip8, emulator_t *emulator)
   SDL_RenderPresent(emulator->renderer);
 }
 
+/**
+ * @brief audio callback function to generate square wave
+ *
+ * @param userdata unused
+ * @param stream buffer to write audio data to
+ * @param len length of the stream buffer in bytes
+ */
+void audio_callback(void *userdata, uint8_t *stream, int len)
+{
+  // waves are represented in computers by a series of numbers called samples
+  static double phase = 0.0; // Φ -- is the position of a point in time on a waveform cycle
+  int16_t *buffer = (int16_t *)stream;
+  int length = len / 2; // 2 bytes per sample
+
+  // fₛ is the sample rate
+  // f is number of cycles/s
+  // time taken for one sample = Δt = 1 / fₛ
+  // ΔΦ = f * Δt = f / fₛ
+
+  double delta_phase = (double)FREQUENCY / SAMPLE_RATE;
+
+  for (int i = 0; i < length; ++i)
+  {
+    // square wave
+    buffer[i] = (sin(phase * 2.0 * M_PI) > 0 ? 1 : -1) * AMPLITUDE; // makes a square wave -- only alters between 2 values, 1 and -1
+    phase += delta_phase;
+    if (phase >= 1.0)
+    {
+      phase -= 1.0; // one cycle over, reset to beginning of next cycle
+    }
+  }
+}
+
 /* ---------------------------------- main ---------------------------------- */
 
 int main(int argc, char **argv)
@@ -419,6 +475,7 @@ int main(int argc, char **argv)
   emulator_t emulator = {
       .window = NULL,
       .renderer = NULL,
+      .audio_device = 0,
       .bg_color = g_config.bg_color,
       .fg_color = g_config.fg_color,
   };
@@ -467,8 +524,12 @@ int main(int argc, char **argv)
       }
       if (chip8.sound_timer > 0)
       {
-        // todo: play sound
+        SDL_PauseAudioDevice(emulator.audio_device, 0); // play sound
         chip8.sound_timer--;
+      }
+      else
+      {
+        SDL_PauseAudioDevice(emulator.audio_device, 1); // pause sound
       }
     }
   }
