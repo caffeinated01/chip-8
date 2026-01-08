@@ -488,34 +488,27 @@ int main(int argc, char **argv)
   bool running = true;
   uint32_t last_cycle_time = 0;
   uint32_t last_timer_time = 0;
-
-  /*
-    to ensure the timers decrement at a stable 60Hz rate, we
-    cannot simply decrement them on every loop iteration
-
-    instead a time-based approach is required. we measure the
-    real time that has passed since the last timer update. if
-    that elapsed time exceeds the target period for 60Hz (1000ms / 60 ≈ 16.667ms),
-    we decrement the timers and record the current time as the
-    new starting point for the next interval.
-
-    this seperates the timer speed from the cpu's processing speed,
-    ensuring consistent behavior on all machines.
-  */
+  uint32_t timer_period = 1000 / 60; // around 16ms for 60Hz
 
   while (running)
   {
     handle_input(&chip8, &running);
 
     uint32_t current_time = SDL_GetTicks();
-    if (current_time - last_cycle_time > g_config.cycle_delay)
+
+    // calculate time until next cycle and next timer tick
+    uint32_t time_since_cycle = current_time - last_cycle_time;
+    uint32_t time_since_timer = current_time - last_timer_time;
+
+    if (time_since_cycle >= g_config.cycle_delay)
     {
       last_cycle_time = current_time;
       chip8_cycle(&chip8);
       draw_display(&chip8, &emulator);
+      time_since_cycle = 0;
     }
 
-    if (current_time - last_timer_time > (1000 / 60))
+    if (time_since_timer >= timer_period)
     {
       last_timer_time = current_time;
       if (chip8.delay_timer > 0)
@@ -531,6 +524,17 @@ int main(int argc, char **argv)
       {
         SDL_PauseAudioDevice(emulator.audio_device, 1); // pause sound
       }
+      time_since_timer = 0;
+    }
+
+    // calculate how long to sleep until the next event
+    uint32_t time_to_next_cycle = g_config.cycle_delay - time_since_cycle;
+    uint32_t time_to_next_timer = timer_period - time_since_timer;
+    uint32_t sleep_time = (time_to_next_cycle < time_to_next_timer) ? time_to_next_cycle : time_to_next_timer;
+
+    if (sleep_time > 0)
+    {
+      SDL_Delay(sleep_time);
     }
   }
 
