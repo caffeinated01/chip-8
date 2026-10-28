@@ -9,9 +9,8 @@
 
 #define WINDOW_TITLE "CHIP-8"
 
-#define SAMPLE_RATE 48000 // number of samples computer takes per second to represent the wave
-#define AMPLITUDE 2000
-#define FREQUENCY 440 // "440Hz is a middle C and pleasant as well" ~ https://forum.allaboutcircuits.com/threads/frequency-for-a-nice-beep-sound.116284/
+#define SAMPLE_RATE 44100
+#define AMPLITUDE 3000
 
 typedef struct Emulator
 {
@@ -28,7 +27,7 @@ static void print_usage(FILE *out, const char *program);
 
 static color_t hex_to_rgba(const char *hex);
 
-static int initialise_sdl(emulator_t *emulator);
+static int initialise_sdl(emulator_t *emulator, int *sample_nr);
 static void cleanup_sdl(emulator_t *emulator, int exit_status);
 
 static void parse_arguments(int argc, char **argv, char **rom_path);
@@ -94,7 +93,7 @@ static color_t hex_to_rgba(const char *hex)
  * @param emulator pointer to emulator struct
  * @return `0` on success, `1` on failure
  */
-static int initialise_sdl(emulator_t *emulator)
+static int initialise_sdl(emulator_t *emulator, int *sample_nr)
 {
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
   {
@@ -121,13 +120,16 @@ static int initialise_sdl(emulator_t *emulator)
     return 1;
   }
 
-  SDL_AudioSpec want, have;
-  SDL_zero(want);
-  want.freq = SAMPLE_RATE;
-  want.format = AUDIO_S16SYS;
-  want.channels = 1;
-  want.samples = 4096;
-  want.callback = audio_callback;
+  // audio solution taken from https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
+  SDL_AudioSpec want;
+  want.freq = SAMPLE_RATE;        // number of samples per second
+  want.format = AUDIO_S16SYS;     // sample type (here: signed short i.e. 16 bit)
+  want.channels = 1;              // only one channel
+  want.samples = 2048;            // buffer-size
+  want.callback = audio_callback; // function SDL calls periodically to refill the buffer
+  want.userdata = sample_nr;      // counter, keeping track of current sample number
+
+  SDL_AudioSpec have;
 
   emulator->audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
   if (!emulator->audio_device)
@@ -415,33 +417,20 @@ static void draw_display(chip8_t *chip8, emulator_t *emulator)
 /**
  * @brief audio callback function to generate square wave
  *
- * @param userdata unused
- * @param stream buffer to write audio data to
- * @param len length of the stream buffer in bytes
+ * @param user_data unused
+ * @param raw_buffer buffer to write audio data to
+ * @param bytes length of the stream buffer in bytes
  */
-void audio_callback(void *userdata, uint8_t *stream, int len)
+void audio_callback(void *user_data, uint8_t *raw_buffer, int bytes)
 {
-  // waves are represented in computers by a series of numbers called samples
-  static double phase = 0.0; // Φ -- is the position of a point in time on a waveform cycle
-  int16_t *buffer = (int16_t *)stream;
-  int length = len / 2; // 2 bytes per sample
+  int16_t *buffer = (int16_t *)raw_buffer;
+  int length = bytes / sizeof(*buffer);
+  int *sample_nr = (int *)user_data;
 
-  // fₛ is the sample rate
-  // f is number of cycles/s
-  // time taken for one sample = Δt = 1 / fₛ
-  // ΔΦ = f * Δt = f / fₛ
-
-  double delta_phase = (double)FREQUENCY / SAMPLE_RATE;
-
-  for (int i = 0; i < length; ++i)
+  for (int i = 0; i < length; i++, (*sample_nr)++)
   {
-    // square wave
-    buffer[i] = (sin(phase * 2.0 * M_PI) > 0 ? 1 : -1) * AMPLITUDE; // makes a square wave -- only alters between 2 values, 1 and -1
-    phase += delta_phase;
-    if (phase >= 1.0)
-    {
-      phase -= 1.0; // one cycle over, reset to beginning of next cycle
-    }
+    double time = (double)(*sample_nr) / (double)SAMPLE_RATE;
+    buffer[i] = (int16_t)(AMPLITUDE * sin(2.0 * M_PI * 441.0 * time));
   }
 }
 
@@ -480,7 +469,9 @@ int main(int argc, char **argv)
       .fg_color = g_config.fg_color,
   };
 
-  if (initialise_sdl(&emulator) != 0)
+  int sample_nr = 0;
+
+  if (initialise_sdl(&emulator, &sample_nr) != 0)
   {
     cleanup_sdl(&emulator, EXIT_FAILURE);
   }
